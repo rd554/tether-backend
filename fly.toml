@@ -2,7 +2,7 @@ app = "tether-backend"
 primary_region = "iad"
 
 [build]
-  buildpacks = ["gcr.io/paketo-buildpacks/nodejs"]
+  builder = "paketobuildpacks/builder:base"
 
 [env]
   NODE_ENV = "production"
