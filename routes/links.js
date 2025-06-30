@@ -656,4 +656,18 @@ router.get('/team/:teamId', async (req, res) => {
   }
 });
 
+// DELETE /api/links/:linkId - Delete a link
+router.delete('/:linkId', async (req, res) => {
+  try {
+    const { linkId } = req.params;
+    const deleted = await Link.findByIdAndDelete(linkId);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Link not found' });
+    }
+    res.json({ success: true, message: 'Link deleted' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete link', message: error.message });
+  }
+});
+
 module.exports = router; 
