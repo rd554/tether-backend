@@ -26,7 +26,9 @@ router.get('/overview', async (req, res) => {
           name: (googleUser.firstName || 'Test') + ' ' + (googleUser.lastName || googleUser.username || ''),
           avatar: '',
           onboarded: false,
-          role: 'PM', // Use a valid enum value
+          role: 'PM',
+          department: 'PM',
+          designation: 'Product Manager',
           stats: {
             linksCreated: 0,
             responseRate: 0,
