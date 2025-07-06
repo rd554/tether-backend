@@ -3,7 +3,6 @@ const router = express.Router();
 const Team = require('../models/Team');
 const User = require('../models/User');
 const Joi = require('joi');
-const { verifyGoogleToken } = require('../middleware/auth');
 
 // Validation schemas
 const createTeamSchema = Joi.object({
@@ -28,7 +27,7 @@ const addMemberSchema = Joi.object({
 });
 
 // GET /api/teams - Get user's teams
-router.get('/', verifyGoogleToken, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     // req.user contains Google token payload, not our database user
     const googleUser = req.user;
@@ -74,7 +73,7 @@ router.get('/', verifyGoogleToken, async (req, res) => {
 });
 
 // POST /api/teams - Create new team
-router.post('/', verifyGoogleToken, async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     // Validate request body
     const { error, value } = createTeamSchema.validate(req.body);
@@ -163,7 +162,7 @@ router.post('/', verifyGoogleToken, async (req, res) => {
 });
 
 // GET /api/teams/:teamId - Get team details
-router.get('/:teamId', verifyGoogleToken, async (req, res) => {
+router.get('/:teamId', async (req, res) => {
   try {
     const { teamId } = req.params;
     
@@ -192,7 +191,7 @@ router.get('/:teamId', verifyGoogleToken, async (req, res) => {
 });
 
 // PUT /api/teams/:teamId - Update team
-router.put('/:teamId', verifyGoogleToken, async (req, res) => {
+router.put('/:teamId', async (req, res) => {
   try {
     const { teamId } = req.params;
     const { name, description, productName, productVersion, tags, settings, status } = req.body;
@@ -234,7 +233,7 @@ router.put('/:teamId', verifyGoogleToken, async (req, res) => {
 });
 
 // POST /api/teams/:teamId/members - Add member to team
-router.post('/:teamId/members', verifyGoogleToken, async (req, res) => {
+router.post('/:teamId/members', async (req, res) => {
   try {
     const { teamId } = req.params;
     
@@ -317,7 +316,7 @@ router.post('/:teamId/members', verifyGoogleToken, async (req, res) => {
 });
 
 // DELETE /api/teams/:teamId/members/:userId - Remove member from team
-router.delete('/:teamId/members/:userId', verifyGoogleToken, async (req, res) => {
+router.delete('/:teamId/members/:userId', async (req, res) => {
   try {
     const { teamId, userId } = req.params;
     
@@ -444,7 +443,7 @@ router.get('/:teamId/members', async (req, res) => {
 });
 
 // DELETE /api/teams/:teamId - Delete a team
-router.delete('/:teamId', verifyGoogleToken, async (req, res) => {
+router.delete('/:teamId', async (req, res) => {
   try {
     const { teamId } = req.params;
     const team = await Team.findByIdAndDelete(teamId);
