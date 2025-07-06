@@ -5,6 +5,9 @@ const User = require('../models/User');
 const Team = require('../models/Team');
 const { requireTeamMembership } = require('../middleware/auth');
 const Joi = require('joi');
+const authMiddleware = require('../middleware/auth');
+
+router.use(authMiddleware);
 
 // Validation schemas
 const createLinkSchema = Joi.object({
