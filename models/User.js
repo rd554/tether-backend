@@ -17,12 +17,25 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+
+  // Department (fixed set)
+  department: {
+    type: String,
+    enum: ['PM', 'DEV', 'DESIGN', 'LEGAL', 'SECURITY', 'BIZ_OPS', 'CXO', 'STAKEHOLDER'],
+    required: true
+  },
+
+  // Designation (free text)
+  designation: {
+    type: String,
+    default: ''
+  },
   
   // Role and permissions
   role: {
     type: String,
     enum: ['PM', 'DEV', 'DESIGN', 'LEGAL', 'SECURITY', 'BIZ_OPS', 'CXO', 'STAKEHOLDER'],
-    required: true
+    required: false // Now optional
   },
   
   // Team associations

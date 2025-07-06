@@ -21,7 +21,7 @@ const createLinkSchema = Joi.object({
 const updateLinkSchema = Joi.object({
   title: Joi.string().min(3).max(200),
   purpose: Joi.string().max(1000),
-  status: Joi.string().valid('PENDING', 'SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW'),
+  status: Joi.string().valid('PENDING', 'COMPLETE', 'DELAYED'),
   scheduledAt: Joi.date(),
   notes: Joi.string().max(2000),
   priority: Joi.string().valid('LOW', 'MEDIUM', 'HIGH', 'CRITICAL'),
@@ -61,7 +61,7 @@ router.get('/', async (req, res) => {
     if (teamId) query.team = teamId;
     
     const links = await Link.find(query)
-      .populate('participants.userId', 'name email avatar')
+      .populate('participants.userId', 'name email avatar department designation')
       .populate('team', 'name productName')
       .populate('outcomes.assignedTo', 'name email avatar')
       .sort({ createdAt: -1 })
@@ -206,7 +206,7 @@ router.post('/', async (req, res) => {
     });
     
     // Populate data for response
-    await link.populate('participants.userId', 'name email avatar');
+    await link.populate('participants.userId', 'name email avatar department designation');
     await link.populate('team', 'name productName');
     
     res.status(201).json({
@@ -241,7 +241,7 @@ router.get('/:linkId', async (req, res) => {
     }
     
     const link = await Link.findById(linkId)
-      .populate('participants.userId', 'name email avatar')
+      .populate('participants.userId', 'name email avatar department designation')
       .populate('team', 'name productName')
       .populate('outcomes.assignedTo', 'name email avatar');
     
@@ -347,7 +347,7 @@ router.put('/:linkId', async (req, res) => {
     await link.save();
     
     // Populate data for response
-    await link.populate('participants.userId', 'name email avatar');
+    await link.populate('participants.userId', 'name email avatar department designation');
     await link.populate('team', 'name productName');
     await link.populate('outcomes.assignedTo', 'name email avatar');
     
@@ -599,7 +599,7 @@ router.get('/team/:teamId', async (req, res) => {
     if (status) query.status = status;
     
     const links = await Link.find(query)
-      .populate('participants.userId', 'name email avatar')
+      .populate('participants.userId', 'name email avatar department designation')
       .populate('outcomes.assignedTo', 'name email avatar')
       .sort({ createdAt: -1 })
       .limit(parseInt(limit));

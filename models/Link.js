@@ -43,7 +43,7 @@ const linkSchema = new mongoose.Schema({
   // Status tracking
   status: {
     type: String,
-    enum: ['PENDING', 'SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW'],
+    enum: ['PENDING', 'COMPLETE', 'DELAYED'],
     default: 'PENDING'
   },
   

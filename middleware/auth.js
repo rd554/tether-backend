@@ -15,6 +15,25 @@ async function verifyGoogleToken(req, res, next) {
     return res.status(401).json({ message: 'No token provided or malformed header', debug: { authHeader } });
   }
   const token = authHeader.split(' ')[1];
+
+  // Allow test users: token format 'testuser-<username>'
+  if (token.startsWith('testuser-')) {
+    const username = token.replace('testuser-', '');
+    if (['test1', 'test2', 'test3'].includes(username)) {
+      req.user = {
+        email: `${username}@test.com`,
+        username,
+        role: 'PM', // Always PM
+        firstName: 'Test',
+        lastName: username,
+      };
+      console.log('Test user authenticated:', req.user);
+      return next();
+    } else {
+      return res.status(401).json({ message: 'Invalid test user token' });
+    }
+  }
+
   try {
     console.log('Verifying Google ID token...');
     const ticket = await client.verifyIdToken({

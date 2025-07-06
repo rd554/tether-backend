@@ -21,8 +21,10 @@ const createTeamSchema = Joi.object({
 
 const addMemberSchema = Joi.object({
   email: Joi.string().email().required(),
-  role: Joi.string().valid('PM', 'DEV', 'DESIGN', 'LEGAL', 'SECURITY', 'BIZ_OPS', 'STAKEHOLDER').required(),
-  firstName: Joi.string().optional()
+  name: Joi.string().required(),
+  department: Joi.string().valid('PM', 'DEV', 'DESIGN', 'LEGAL', 'SECURITY', 'BIZ_OPS', 'CXO', 'STAKEHOLDER').required(),
+  designation: Joi.string().allow('').optional(),
+  role: Joi.string().optional() // for backward compatibility, but not required
 });
 
 // GET /api/teams - Get user's teams
@@ -245,19 +247,18 @@ router.post('/:teamId/members', verifyGoogleToken, async (req, res) => {
       });
     }
     
-    const { email, role, firstName } = value;
+    const { email, name, department, designation } = value;
     
     // Find or create user by email
     let user = await User.findOne({ email });
     if (!user) {
-      const nameValue = firstName || email.split('@')[0];
       user = await User.create({
         email,
-        firstName: nameValue,
-        name: nameValue,
+        name,
+        department,
+        designation,
         avatar: null,
-        onboarded: false,
-        role,
+        onboarded: false
       });
     }
     
@@ -275,7 +276,7 @@ router.post('/:teamId/members', verifyGoogleToken, async (req, res) => {
     }
     
     // Add user to team
-    team.addMember(user._id, role);
+    team.addMember(user._id, department); // use department as the team role
     await team.save();
     
     // Add team to user's team list
@@ -283,7 +284,7 @@ router.post('/:teamId/members', verifyGoogleToken, async (req, res) => {
       $push: {
         teams: {
           teamId: team._id,
-          role,
+          role: department, // use department as the role in the team
           joinedAt: new Date()
         }
       }
@@ -425,6 +426,20 @@ router.get('/:teamId/stats', async (req, res) => {
       error: 'Failed to fetch team statistics',
       message: error.message
     });
+  }
+});
+
+// GET /api/teams/:teamId/members - Get team members
+router.get('/:teamId/members', async (req, res) => {
+  try {
+    const { teamId } = req.params;
+    const team = await Team.findById(teamId).populate('members.userId', 'name email avatar role');
+    if (!team) {
+      return res.status(404).json({ error: 'Team not found' });
+    }
+    res.json({ success: true, members: team.members });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch team members', message: error.message });
   }
 });
 
