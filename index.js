@@ -15,7 +15,6 @@ const authRoutes = require('./routes/auth');
 // Import middleware
 const loggerMiddleware = require('./middleware/logger');
 const googleAuthMiddleware = require('./middleware/googleAuth');
-const { verifyGoogleToken } = require('./middleware/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -51,10 +50,10 @@ app.get('/health', (req, res) => {
 });
 
 // API routes
-app.use('/api/teams', verifyGoogleToken, teamRoutes);
-app.use('/api/users', verifyGoogleToken, userRoutes);
-app.use('/api/links', verifyGoogleToken, linkRoutes);
-app.use('/api/dashboard', verifyGoogleToken, dashboardRoutes);
+app.use('/api/teams', teamRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/links', linkRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/auth', authRoutes);
 
 // Error handling middleware

@@ -1,11 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
 const Team = require('../models/Team');
 const Link = require('../models/Link');
-
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 router.post('/google', async (req, res) => {
   console.log('Received idToken:', req.body.idToken);
