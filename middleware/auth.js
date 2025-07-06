@@ -3,6 +3,7 @@
 // Add your own authentication logic here if needed. 
 
 module.exports = function (req, res, next) {
+  console.log('Auth middleware running. Header:', req.headers.authorization);
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer testuser-')) {
     // Extract username from token
