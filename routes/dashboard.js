@@ -4,6 +4,9 @@ const Team = require('../models/Team');
 const User = require('../models/User');
 const Link = require('../models/Link');
 const { requireRole } = require('../middleware/auth');
+const authMiddleware = require('../middleware/auth');
+
+router.use(authMiddleware);
 
 // GET /api/dashboard/overview - Get dashboard overview
 router.get('/overview', async (req, res) => {
