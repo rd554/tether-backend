@@ -4,32 +4,32 @@ const User = require('../models/User');
 const Team = require('../models/Team');
 const Link = require('../models/Link');
 
-router.post('/google', async (req, res) => {
-  console.log('Received idToken:', req.body.idToken);
-  console.log('Using GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
-  const { idToken } = req.body;
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-    const payload = ticket.getPayload();
-    let user = await User.findOne({ email: payload.email });
-    if (!user) {
-      user = await User.create({
-        email: payload.email,
-        firstName: payload.given_name,
-        lastName: payload.family_name,
-        avatar: payload.picture,
-        onboarded: false,
-        role: 'PM',
-      });
-    }
-    res.json({ success: true, user });
-  } catch (err) {
-    res.status(401).json({ error: 'Invalid Google token', details: err.message });
-  }
-});
+// router.post('/google', async (req, res) => {
+//   console.log('Received idToken:', req.body.idToken);
+//   console.log('Using GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
+//   const { idToken } = req.body;
+//   try {
+//     const ticket = await client.verifyIdToken({
+//       idToken,
+//       audience: process.env.GOOGLE_CLIENT_ID,
+//     });
+//     const payload = ticket.getPayload();
+//     let user = await User.findOne({ email: payload.email });
+//     if (!user) {
+//       user = await User.create({
+//         email: payload.email,
+//         firstName: payload.given_name,
+//         lastName: payload.family_name,
+//         avatar: payload.picture,
+//         onboarded: false,
+//         role: 'PM',
+//       });
+//     }
+//     res.json({ success: true, user });
+//   } catch (err) {
+//     res.status(401).json({ error: 'Invalid Google token', details: err.message });
+//   }
+// });
 
 // Test user authentication route
 router.post('/test', async (req, res) => {

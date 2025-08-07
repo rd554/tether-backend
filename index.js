@@ -14,16 +14,35 @@ const authRoutes = require('./routes/auth');
 
 // Import middleware
 const loggerMiddleware = require('./middleware/logger');
-const googleAuthMiddleware = require('./middleware/googleAuth');
+// const googleAuthMiddleware = require('./middleware/googleAuth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Security middleware
 app.use(helmet());
+// app.use(cors({
+//   origin: true,
+//   credentials: true
+// }));
+
+// FIXED CORS Configuration
 app.use(cors({
-  origin: true,
-  credentials: true
+  origin: [
+    'https://tethernow.netlify.app',
+    'http://localhost:3000',
+    'http://localhost:5173' // Add if using Vitezz
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With', 
+    'Accept',
+    'Origin'
+  ],
+  optionsSuccessStatus: 200
 }));
 
 // Rate limiting
